@@ -14,29 +14,6 @@ def index(request):
     return JsonResponse(response, status=200)
 
 
-def insert_categories(request):
-    with open("category.json", 'r', encoding='utf-8') as f:
-        categories = json.load(f)
-
-    for cat in categories:
-        category = Category(name=cat['name'])
-        category.save()
-
-
-def insert_ads(request):
-    with open("ads.json", 'r', encoding='utf-8') as f:
-        ads = json.load(f)
-
-    for i in ads:
-        ad = Ads(name=i['name'],
-                 author=i['author'],
-                 price=i['price'],
-                 description=i['description'],
-                 address=i['address']
-                 )
-        ad.save()
-
-
 @method_decorator(csrf_exempt, name='dispatch')
 class CategoryView(View):
 
