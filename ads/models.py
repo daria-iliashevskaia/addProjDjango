@@ -9,6 +9,9 @@ class Category(models.Model):
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
 
+    def __str__(self):
+        return self.name
+
 
 class Location(models.Model):
 
@@ -19,6 +22,9 @@ class Location(models.Model):
     class Meta:
         verbose_name = 'Локация'
         verbose_name_plural = 'Локации'
+
+    def __str__(self):
+        return self.name
 
 
 class User(models.Model):
@@ -33,6 +39,10 @@ class User(models.Model):
     class Meta:
         verbose_name = 'Автор'
         verbose_name_plural = 'Авторы'
+        ordering = ['username']
+
+    def __str__(self):
+        return self.first_name
 
 
 class Ads(models.Model):
@@ -42,9 +52,12 @@ class Ads(models.Model):
     price = models.IntegerField(verbose_name='Цена')
     description = models.TextField(max_length=255, blank=True, verbose_name='Описание')
     is_published = models.BooleanField(verbose_name='Опубликовано', default=True)
-    image = models.ImageField(upload_to='images/', default='No images')
+    image = models.ImageField(upload_to='images/', null=True, blank=True)
     category = models.ForeignKey(Category, null=True, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = 'Объявление'
         verbose_name_plural = 'Объявления'
+
+    def __str__(self):
+        return self.name
