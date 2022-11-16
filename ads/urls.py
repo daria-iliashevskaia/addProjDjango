@@ -25,7 +25,7 @@ urlpatterns = [
     path('user/<int:pk>/update/', views.UserUpdateView.as_view()),
     path('cat/<int:pk>/delete/', views.CategoryDeleteView.as_view()),
     path('ad/<int:pk>/delete/', views.AdsDeleteView.as_view()),
-    path('user/<int:pk>/delete/', views.AdsDeleteView.as_view()),
+    path('user/<int:pk>/delete/', views.UserDeleteView.as_view()),
 ]
 
 urlpatterns += router.urls
