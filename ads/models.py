@@ -49,7 +49,7 @@ class User(AbstractUser):
         ordering = ['username']
 
     def __str__(self):
-        return self.first_name
+        return self.username
 
 
 class Ads(models.Model):

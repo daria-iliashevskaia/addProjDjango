@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework.viewsets import ModelViewSet
 
 from ads.models import Category, Ads, User, Location, Selections
-from ads.permissions import SelectionsUpdatePermission
+from ads.permissions import SelectionsUpdatePermission, AdsUpdatePermission
 from ads.serializers import CategorySerializer, AdsSerializer, UserSerializer, LocationSerializer, SelectionsSerializer, \
     SelectionsCreateSerializer
 
@@ -76,18 +76,21 @@ class AdsCreateView(CreateAPIView):
 
     queryset = Ads.objects.all()
     serializer_class = AdsSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class AdsUpdateView(UpdateAPIView):
 
     queryset = Ads.objects.all()
     serializer_class = AdsSerializer
+    permission_classes = [IsAuthenticated, AdsUpdatePermission]
 
 
 class AdsDeleteView(DestroyAPIView):
 
     queryset = Ads.objects.all()
     serializer_class = AdsSerializer
+    permission_classes = [IsAuthenticated, AdsUpdatePermission]
 
 
 class UserListView(ListAPIView):
