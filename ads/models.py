@@ -1,3 +1,4 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
@@ -27,13 +28,19 @@ class Location(models.Model):
         return self.name
 
 
-class User(models.Model):
+class User(AbstractUser):
+
+    UNKNOWN = "unknown"
+    MEMBER = "member"
+    MODERATOR = "moderator"
+    ADMIN = "admin"
+    ROLE = [(UNKNOWN, "unknown"), (MEMBER, "member"), (MODERATOR, "moderator"), (ADMIN, "admin")]
+
     first_name = models.CharField(max_length=100, verbose_name='Имя')
     last_name = models.CharField(max_length=100, blank=True, verbose_name='Фамилия')
-    username = models.CharField(max_length=100, verbose_name='Логин')
-    password = models.CharField(max_length=100, verbose_name='Пароль')
-    role = models.CharField(max_length=100, verbose_name='Роль')
-    age = models.SmallIntegerField(verbose_name='Возраст')
+    username = models.CharField(max_length=100, verbose_name='Логин', unique=True)
+    role = models.CharField(max_length=100, choices=ROLE, default=UNKNOWN, verbose_name='Роль')
+    age = models.SmallIntegerField(verbose_name='Возраст', null=True)
     location = models.ManyToManyField(Location, null=True)
 
     class Meta:
@@ -58,6 +65,20 @@ class Ads(models.Model):
     class Meta:
         verbose_name = 'Объявление'
         verbose_name_plural = 'Объявления'
+
+    def __str__(self):
+        return self.name
+
+
+class Selections(models.Model):
+
+    name = models.CharField(max_length=100, verbose_name='Имя')
+    owner = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    items = models.ManyToManyField(Ads, null=True)
+
+    class Meta:
+        verbose_name = 'Подборка'
+        verbose_name_plural = 'Подборки'
 
     def __str__(self):
         return self.name
