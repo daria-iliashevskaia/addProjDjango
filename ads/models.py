@@ -1,10 +1,30 @@
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
+from django.core.validators import MinLengthValidator, MinValueValidator
 from django.db import models
+from django.utils import timezone
+
+
+def is_published_not_true(value):
+    if value:
+        raise ValidationError(
+            'You can not publicate ads with "is_published" is True'
+        )
+
+
+def age_validator(value):
+    now = timezone.now()
+
+    if now.year - value.year < 9:
+        raise ValidationError(
+            "Your should be older then 9 years"
+        )
 
 
 class Category(models.Model):
 
     name = models.CharField(max_length=100, verbose_name='Имя')
+    slug = models.CharField(unique=True, max_length=10, validators=[MinLengthValidator(5)])
 
     class Meta:
         verbose_name = 'Категория'
@@ -42,6 +62,8 @@ class User(AbstractUser):
     role = models.CharField(max_length=100, choices=ROLE, default=UNKNOWN, verbose_name='Роль')
     age = models.SmallIntegerField(verbose_name='Возраст', null=True)
     location = models.ManyToManyField(Location, null=True)
+    birth_date = models.DateField(validators=[age_validator], null=True)
+    email = models.EmailField()
 
     class Meta:
         verbose_name = 'Автор'
@@ -54,11 +76,11 @@ class User(AbstractUser):
 
 class Ads(models.Model):
 
-    name = models.CharField(max_length=100, verbose_name='Имя')
+    name = models.CharField(max_length=100, verbose_name='Имя', validators=[MinLengthValidator(10)])
     author = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
-    price = models.IntegerField(verbose_name='Цена')
-    description = models.TextField(max_length=255, blank=True, verbose_name='Описание')
-    is_published = models.BooleanField(verbose_name='Опубликовано', default=True)
+    price = models.IntegerField(verbose_name='Цена', validators=[MinValueValidator(0)])
+    description = models.TextField(max_length=800, blank=True, verbose_name='Описание')
+    is_published = models.BooleanField(verbose_name='Опубликовано', default=True, validators=[is_published_not_true])
     image = models.ImageField(upload_to='images/', null=True, blank=True)
     category = models.ForeignKey(Category, null=True, on_delete=models.CASCADE)
 

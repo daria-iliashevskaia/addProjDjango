@@ -1,14 +1,28 @@
-from rest_framework import serializers
 
+from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 
 from ads.models import Category, Ads, User, Location, Selections
+
+
+class DomenValidator:
+    def __init__(self, domens):
+        if not isinstance(domens, list):
+            domens = [domens]
+
+        self.domens = domens
+
+    def __call__(self, value):
+        domen = value.split("@")[1]
+        if domen in self.domens:
+            raise serializers.ValidationError("Incorrect domen")
 
 
 class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ['id', 'name']
+        fields = '__all__'
 
 
 class AdsSerializer(serializers.ModelSerializer):
@@ -37,6 +51,9 @@ class UserSerializer(serializers.ModelSerializer):
         queryset=Location.objects.all(),
         slug_field='name')
 
+    email = serializers.EmailField(validators=[UniqueValidator(queryset=User.objects.all()),
+                                               DomenValidator(["rambler.ru"])])
+
     class Meta:
         model = User
         fields = '__all__'
@@ -45,7 +62,7 @@ class UserSerializer(serializers.ModelSerializer):
 
         self._location = self.initial_data.pop("location")
 
-        return super().is_valid(raise_exception=False)
+        return super().is_valid(raise_exception=True)
 
     def create(self, validated_data):
 
