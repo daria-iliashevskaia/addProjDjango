@@ -54,7 +54,11 @@ http://127.0.0.1:8000/user/token/
   **редактирование чужой подборки*
   ![img_5.png](img_5.png)
 
-
+- Покрыты тестами: 
+  1. создание объявления — POST /ads (create_ads_test); 
+  2. создание подборки — POST /selection (create_ selection _test); 
+  3. выдача списка объявлений (без фильтров) — GET /ads (ad_list_test); 
+  4. выдача одного объявления — GET /ads/<ad_id> (ad_detail_test).
 
 
 
