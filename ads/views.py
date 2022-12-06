@@ -69,14 +69,14 @@ class AdsDetailView(RetrieveAPIView):
 
     queryset = Ads.objects.all()
     serializer_class = AdsSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class AdsCreateView(CreateAPIView):
 
     queryset = Ads.objects.all()
     serializer_class = AdsSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class AdsUpdateView(UpdateAPIView):
@@ -144,7 +144,7 @@ class SelectionsCreateView(CreateAPIView):
 
     queryset = Selections.objects.all()
     serializer_class = SelectionsCreateSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class SelectionsUpdateView(UpdateAPIView):

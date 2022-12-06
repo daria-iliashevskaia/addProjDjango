@@ -1,28 +1,13 @@
 import pytest
 
-from ads.models import User, Category
-
-from tests.factories import UserFactory, CategoryFactory, AdsFactory
-
 
 @pytest.mark.django_db
-def test_create_ads(client, ads):
-    author = User.objects.create(
-                        password="1234",
-                        first_name="test",
-                        last_name="test",
-                        username="username",
-                        age=24
-                        )
-    category = Category.objects.create(
-                        name="test",
-                        slug="test",
-                        )
+def test_create_ads(client, ads, JWT_token):
 
     data = {
-            "id": ads.id,
-            "author": author.username,
-            "category": category.name,
+            "id": 8,
+            "author": ads.author.username,
+            "category": ads.category.name,
             "name": "testtesttest",
             "price": 100,
             "description": "testtesttesttesttesttest",
@@ -31,20 +16,18 @@ def test_create_ads(client, ads):
             }
 
     data_to_send = {
-            "author": author.username,
-            "category": category.name,
+            "author": ads.author.username,
+            "category": ads.category.name,
             "name": "testtesttest",
             "price": 100,
             "description": "testtesttesttesttesttest",
             "is_published": False
             }
 
-    # author = UserFactory.create()
-    # category = CategoryFactory.create()
-
     response = client.post('/ad/create/',
                            data_to_send,
-                           content_type="application/json")
+                           content_type="application/json",
+                           HTTP_AUTHORIZATION="Bearer " + JWT_token)
 
     assert response.status_code == 201
     assert response.data == data

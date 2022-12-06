@@ -13,7 +13,8 @@ def JWT_token(client, django_user_model):
 
     response = client.post(
         "/user/token/",
-        {"username": username, "password": password},
+        {"username": username,
+         "password": password},
         format='json'
     )
 
